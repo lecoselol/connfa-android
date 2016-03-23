@@ -19,7 +19,7 @@ android {
     compileSdkVersion Integer.parseInt(project.COMPILE_SDK_VERSION)
     buildToolsVersion project.BUILD_TOOLS_VERSION
     defaultConfig {
-        applicationId 'com.ls.drupalconapp'
+        applicationId 'it.droidcon16.app'
         minSdkVersion Integer.parseInt(project.MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(project.TARGET_SDK_VERSION)
         versionCode Integer.parseInt(project.VERSION_CODE)
@@ -48,7 +48,6 @@ android {
     }
     productFlavors {
         barcelona {
-            applicationId "com.ls.drupalconapp"
             versionName "2.0.4"
         }
     }
