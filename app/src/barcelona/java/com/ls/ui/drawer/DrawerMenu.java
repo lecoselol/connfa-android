@@ -18,13 +18,13 @@ public class DrawerMenu {
     };
 
     public static final int[] MENU_ICON_RES_SEL = {
-            R.drawable.menu_icon_program_sel,
-            R.drawable.menu_icon_bofs_sel,
-            R.drawable.menu_icon_social_sel,
-            R.drawable.menu_icon_speakers_sel,
-            R.drawable.menu_icon_my_schedule_sel,
-            R.drawable.menu_icon_location_sel,
-            R.drawable.menu_icon_about_sel
+            R.drawable.menu_icon_program,
+            R.drawable.menu_icon_bofs,
+            R.drawable.menu_icon_social,
+            R.drawable.menu_icon_speakers,
+            R.drawable.menu_icon_my_schedule,
+            R.drawable.menu_icon_location,
+            R.drawable.menu_icon_about
     };
 
     public static final String[] MENU_STRING_ARRAY = {

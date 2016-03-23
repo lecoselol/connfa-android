@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_dark">#D3472A</color>
-    <color name="primary">#D3472A</color>
+    <color name="primary_dark">#0394a7</color>
+    <color name="primary">#03bad2</color>
 
-    <color name="event_primary">#2AA9E0</color>
-    <color name="event">#2AA9E0</color>
+    <color name="event_primary">#fce219</color>
+    <color name="event">#fce219</color>
 
-    <color name="speaker_primary">#2AA9E0</color>
-    <color name="speaker">#2AA9E0</color>
+    <color name="speaker_primary">@color/primary_dark</color>
+    <color name="speaker">@color/primary</color>
 
-    <color name="favorite">#FCB832</color>
-    <color name="link">#2AA9E0</color>
+    <color name="favorite">#eb3b61</color>
+    <color name="link">#eb3b61</color>
     <color name="navigation">#ffffff</color>
 </resources>
