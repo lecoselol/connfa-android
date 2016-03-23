@@ -14,7 +14,7 @@ public class SocialRequest extends BaseSafeConsumeContainerRequest<Event.Holder>
 
     @Override
     protected String getPath() {
-        return "getSocialEvents";
+        return "getSocialEvents.json";
     }
 
     @Override

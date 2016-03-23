@@ -14,7 +14,7 @@ public class BofsRequest extends BaseSafeConsumeContainerRequest<Event.Holder> {
 
     @Override
     protected String getPath() {
-        return "getBofs";
+        return "getBofs.json";
     }
 
     @Override
