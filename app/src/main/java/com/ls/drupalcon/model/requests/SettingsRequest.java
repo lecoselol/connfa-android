@@ -14,7 +14,7 @@ public class SettingsRequest extends BaseSafeConsumeContainerRequest<SettingsHol
 
     @Override
     protected String getPath() {
-        return "getSettings";
+        return "getSettings.json";
     }
 
     @Override

@@ -14,7 +14,7 @@ public class LevelsRequest extends BaseSafeConsumeContainerRequest<Level.Holder>
 
     @Override
     protected String getPath() {
-        return "getLevels";
+        return "getLevels.json";
     }
 
     @Override
