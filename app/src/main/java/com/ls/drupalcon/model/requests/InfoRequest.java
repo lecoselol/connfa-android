@@ -14,7 +14,7 @@ public class InfoRequest extends BaseSafeConsumeContainerRequest<InfoItem.Genera
 
     @Override
     protected String getPath() {
-        return "getInfo";
+        return "getInfo.json";
     }
 
     @Override

@@ -113,7 +113,7 @@ public class UpdatesManager {
         config.setResponseFormat(BaseRequest.ResponseFormat.JSON);
         config.setRequestFormat(BaseRequest.RequestFormat.JSON);
         config.setResponseClassSpecifier(UpdateDate.class);
-        BaseRequest checkForUpdatesRequest = new BaseRequest(BaseRequest.RequestMethod.GET, ApplicationConfig.BASE_URL + "checkUpdates", config);
+        BaseRequest checkForUpdatesRequest = new BaseRequest(BaseRequest.RequestMethod.GET, ApplicationConfig.BASE_URL + "checkUpdates.json", config);
         String lastDate = PreferencesManager.getInstance().getLastUpdateDate();
         checkForUpdatesRequest.addRequestHeader(IF_MODIFIED_SINCE_HEADER, lastDate);
         ResponseData updatesData = mClient.performRequest(checkForUpdatesRequest, true);
