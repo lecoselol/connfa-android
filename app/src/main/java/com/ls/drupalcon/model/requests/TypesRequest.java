@@ -14,7 +14,7 @@ public class TypesRequest extends BaseSafeConsumeContainerRequest<Type.Holder> {
 
     @Override
     protected String getPath() {
-        return "getTypes";
+        return "getTypes.json";
     }
 
     @Override
