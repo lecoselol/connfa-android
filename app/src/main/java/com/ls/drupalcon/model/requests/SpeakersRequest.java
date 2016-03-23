@@ -14,7 +14,7 @@ public class SpeakersRequest extends BaseSafeConsumeContainerRequest<Speaker.Hol
 
     @Override
     protected String getPath() {
-        return "getSpeakers";
+        return "getSpeakers.json";
     }
 
     @Override
