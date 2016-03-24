@@ -14,7 +14,7 @@ import java.util.Map;
 
     @Override
     protected String getPath() {
-        return "getSessions";
+        return "getSessions.json";
     }
 
     @Override
