@@ -81,7 +81,7 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
             isIntentHandled = true;
         }
         handleIntent(getIntent());
-        showIrrelevantTimezoneDialogIfNeeded();
+        //showIrrelevantTimezoneDialogIfNeeded();
     }
 
     @Override
