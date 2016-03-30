@@ -81,27 +81,6 @@ public class EventHolderFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_filter, menu);
-
-        MenuItem filter = menu.findItem(R.id.actionFilter);
-        if (filter != null) {
-            updateFilterState(filter);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.actionFilter:
-                showFilter();
-                break;
-        }
-        return true;
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Model.instance().getUpdatesManager().registerUpdateListener(updateReceiver);
