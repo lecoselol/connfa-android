@@ -3,8 +3,8 @@
     <color name="primary_dark">#0394a7</color>
     <color name="primary">#03bad2</color>
 
-    <color name="event_primary">#fce219</color>
-    <color name="event">#fce219</color>
+    <color name="event_primary">#fc6c19</color>
+    <color name="event">#fc6119</color>
 
     <color name="speaker_primary">@color/primary_dark</color>
     <color name="speaker">@color/primary</color>
