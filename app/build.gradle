@@ -27,10 +27,10 @@ android {
     }
     signingConfigs {
         config {
-            keyAlias 'drupalcon'
-            keyPassword 'lembergsolutions'
-            storeFile file('keystore/keystore.keystore')
-            storePassword 'lembergsolutions'
+            keyAlias 'droidcon'
+            keyPassword 'droidcon'
+            storeFile file('keystore/droidcon.keystore')
+            storePassword 'droidcon'
         }
     }
     buildTypes {
