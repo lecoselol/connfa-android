@@ -187,7 +187,7 @@ public class EventDetailsActivity extends StackKeeperActivity {
         mEvent = event;
         fillToolbar(mEvent);
         fillDate(mEvent);
-        fillPreDescription(mEvent);
+        fillPreDescription();
         fillFavoriteState(mEvent);
         fillSpeakers(mEvent);
         fillDescription(mEvent);
@@ -227,30 +227,9 @@ public class EventDetailsActivity extends StackKeeperActivity {
         }
     }
 
-    private void fillPreDescription(@NonNull EventDetailsEvent event) {
+    private void fillPreDescription() {
         LinearLayout layoutPreDescription = (LinearLayout) findViewById(R.id.layoutPreDescription);
-        TextView txtTrack = (TextView) findViewById(R.id.txtTrack);
-        TextView txtExpLevel = (TextView) findViewById(R.id.txtExpLevel);
-        ImageView imgExpIcon = (ImageView) findViewById(R.id.imgExperience);
-
-        if (TextUtils.isEmpty(event.getTrack()) && TextUtils.isEmpty(event.getLevel())) {
-            layoutPreDescription.setVisibility(View.GONE);
-        } else {
-
-            if (!TextUtils.isEmpty(event.getTrack())) {
-                txtTrack.setText(event.getTrack());
-            } else {
-                txtTrack.setVisibility(View.GONE);
-            }
-
-            if (!TextUtils.isEmpty(event.getLevel())) {
-                txtExpLevel.setText(String.format("%s %s", getString(R.string.exp_level), event.getLevel()));
-                imgExpIcon.setImageResource(Level.getIcon(event.getLevelId()));
-            } else {
-                txtExpLevel.setVisibility(View.GONE);
-                imgExpIcon.setVisibility(View.GONE);
-            }
-        }
+        layoutPreDescription.setVisibility(View.GONE);
     }
 
     private void fillDescription(@NonNull EventDetailsEvent event) {
