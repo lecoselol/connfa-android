@@ -187,7 +187,6 @@ public class EventDetailsActivity extends StackKeeperActivity {
         mEvent = event;
         fillToolbar(mEvent);
         fillDate(mEvent);
-        fillPreDescription();
         fillFavoriteState(mEvent);
         fillSpeakers(mEvent);
         fillDescription(mEvent);
@@ -225,11 +224,6 @@ public class EventDetailsActivity extends StackKeeperActivity {
             TextView txtEventLocation = (TextView) findViewById(R.id.label_where);
             txtEventLocation.setText(eventLocation);
         }
-    }
-
-    private void fillPreDescription() {
-        LinearLayout layoutPreDescription = (LinearLayout) findViewById(R.id.layoutPreDescription);
-        layoutPreDescription.setVisibility(View.GONE);
     }
 
     private void fillDescription(@NonNull EventDetailsEvent event) {
@@ -280,7 +274,6 @@ public class EventDetailsActivity extends StackKeeperActivity {
                 holderSpeakers.addView(speakerView);
             }
         } else {
-            findViewById(R.id.topDivider).setVisibility(View.GONE);
             findViewById(R.id.botDivider).setVisibility(View.GONE);
 
             if (TextUtils.isEmpty(event.getDescription())) {
