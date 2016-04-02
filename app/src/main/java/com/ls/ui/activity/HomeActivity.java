@@ -65,14 +65,18 @@ public class HomeActivity extends StateActivity {
     }
 
     private void loadFreshDataIfPossible() {
-        String lastUpdate = PreferencesManager.getInstance().getLastUpdateDate();
         boolean isOnline = NetworkUtils.isOn(this);
 
         if (isOnline) {
             checkForUpdates();
-        } else if (TextUtils.isEmpty(lastUpdate)) {
+        } else if (isDataNeverUpdated()) {
             showNoNetworkDialog();
         }
+    }
+
+    private boolean isDataNeverUpdated() {
+        String lastUpdate = PreferencesManager.getInstance().getLastUpdateDate();
+        return TextUtils.isEmpty(lastUpdate);
     }
 
     private void checkForUpdates() {
@@ -89,7 +93,6 @@ public class HomeActivity extends StateActivity {
                 loadData(manager);
             }
         }.execute();
-
     }
 
     private void loadData(UpdatesManager manager) {
@@ -237,7 +240,6 @@ public class HomeActivity extends StateActivity {
         if (mSelectedItem == DrawerMenu.DrawerItem.About.ordinal()) {
             AboutActivity.startThisActivity(this);
             mSelectedItem = mLastSelectedItem;
-
         } else {
             DrawerMenuItem item = mAdapter.getItem(mSelectedItem);
             if (!item.isGroup() && mFrManager != null) {
@@ -279,5 +281,4 @@ public class HomeActivity extends StateActivity {
 
         return result;
     }
-
 }

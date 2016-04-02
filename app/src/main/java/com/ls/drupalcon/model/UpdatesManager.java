@@ -1,5 +1,6 @@
 package com.ls.drupalcon.model;
 
+import android.os.AsyncTask;
 import com.ls.drupal.DrupalClient;
 import com.ls.drupalcon.model.data.UpdateDate;
 import com.ls.drupalcon.model.database.ILAPIDBFacade;
@@ -10,14 +11,11 @@ import com.ls.http.base.ResponseData;
 import com.ls.ui.drawer.DrawerManager;
 import com.ls.util.ObserverHolder;
 import com.ls.utils.ApplicationConfig;
-
 import org.jetbrains.annotations.NotNull;
-
-import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class UpdatesManager {
 
@@ -34,9 +32,10 @@ public class UpdatesManager {
     public static final int POIS_REQUEST_ID = 10;
     public static final int INFO_REQUEST_ID = 11;
     public static final int TWITTER_REQUEST_ID = 12;
+    private static final long MINIMUM_STALE_DATA_AGE_MILLIS = TimeUnit.MINUTES.toMillis(15);
 
-    private DrupalClient mClient;
-    private ObserverHolder<DataUpdatedListener> mUpdateListeners;
+    private final DrupalClient mClient;
+    private final ObserverHolder<DataUpdatedListener> mUpdateListeners;
 
     public static final String IF_MODIFIED_SINCE_HEADER = "If-Modified-Since";
     public static final String LAST_MODIFIED_HEADER = "Last-Modified";
@@ -58,7 +57,7 @@ public class UpdatesManager {
         mClient = client;
     }
 
-    public void startLoading(@NotNull final UpdateCallback callback) {
+    public void startLoading(final UpdateCallback callback) {
         new AsyncTask<Void, Void, List<Integer>>() {
 
             @Override
@@ -97,11 +96,11 @@ public class UpdatesManager {
     }
 
     public void registerUpdateListener(DataUpdatedListener listener) {
-        this.mUpdateListeners.registerObserver(listener);
+        mUpdateListeners.registerObserver(listener);
     }
 
     public void unregisterUpdateListener(DataUpdatedListener listener) {
-        this.mUpdateListeners.unregisterObserver(listener);
+        mUpdateListeners.unregisterObserver(listener);
     }
 
     /**
@@ -109,13 +108,19 @@ public class UpdatesManager {
      */
 
     private List<Integer> doPerformLoading() {
+        if (dataIsFresh()) {
+            return null;    // No need to update
+        }
+
         RequestConfig config = new RequestConfig();
         config.setResponseFormat(BaseRequest.ResponseFormat.JSON);
         config.setRequestFormat(BaseRequest.RequestFormat.JSON);
         config.setResponseClassSpecifier(UpdateDate.class);
-        BaseRequest checkForUpdatesRequest = new BaseRequest(BaseRequest.RequestMethod.GET, ApplicationConfig.BASE_URL + "checkUpdates.json", config);
-        String lastDate = PreferencesManager.getInstance().getLastUpdateDate();
-        checkForUpdatesRequest.addRequestHeader(IF_MODIFIED_SINCE_HEADER, lastDate);
+        BaseRequest checkForUpdatesRequest =
+            new BaseRequest(BaseRequest.RequestMethod.GET,
+                            ApplicationConfig.BASE_URL + "checkUpdates.json",
+                            config);
+
         ResponseData updatesData = mClient.performRequest(checkForUpdatesRequest, true);
 
         int statusCode = updatesData.getStatusCode();
@@ -126,14 +131,18 @@ public class UpdatesManager {
             }
             updateDate.setTime(updatesData.getHeaders().get(LAST_MODIFIED_HEADER));
             return loadData(updateDate);
-
         } else {
             return null;
         }
     }
 
-    private List<Integer> loadData(UpdateDate updateDate) {
+    private boolean dataIsFresh() {
+        String lastDate = PreferencesManager.getInstance().getLastUpdateDate();
+        long lastDateMillis = Long.getLong(lastDate, 0);
+        return System.currentTimeMillis() - lastDateMillis < MINIMUM_STALE_DATA_AGE_MILLIS;
+    }
 
+    private List<Integer> loadData(UpdateDate updateDate) {
         List<Integer> updateIds = updateDate.getIdsForUpdate();
         if (updateIds == null || updateIds.isEmpty()) {
             return new LinkedList<>();
@@ -152,17 +161,14 @@ public class UpdatesManager {
             }
             if (success) {
                 facade.setTransactionSuccesfull();
-                if (!TextUtils.isEmpty(updateDate.getTime())) {
-                    PreferencesManager.getInstance().saveLastUpdateDate(updateDate.getTime());
-                }
+                PreferencesManager.getInstance().saveLastUpdateDate(String.valueOf(System.currentTimeMillis()));
             }
             return success ? updateIds : null;
-        } finally {
+        }
+        finally {
             facade.endTransactions();
             facade.close();
         }
-
-
     }
 
     private boolean sendRequestById(int id) {
