@@ -1,6 +1,5 @@
 package com.ls.ui.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,11 +46,6 @@ public class HomeActivity extends StateActivity {
 
     public boolean mIsDrawerItemClicked;
 
-    public static void startThisActivity(Activity activity) {
-        Intent intent = new Intent(activity, HomeActivity.class);
-        activity.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +60,60 @@ public class HomeActivity extends StateActivity {
             isIntentHandled = true;
         }
         handleIntent(getIntent());
+
+        loadFreshDataIfPossible();
+    }
+
+    private void loadFreshDataIfPossible() {
+        String lastUpdate = PreferencesManager.getInstance().getLastUpdateDate();
+        boolean isOnline = NetworkUtils.isOn(this);
+
+        if (isOnline) {
+            checkForUpdates();
+        } else if (TextUtils.isEmpty(lastUpdate)) {
+            showNoNetworkDialog();
+        }
+    }
+
+    private void checkForUpdates() {
+        new AsyncTask<Void, Void, UpdatesManager>() {
+            @Override
+            protected UpdatesManager doInBackground(Void... params) {
+                UpdatesManager manager = Model.instance().getUpdatesManager();
+                manager.checkForDatabaseUpdate();
+                return manager;
+            }
+
+            @Override
+            protected void onPostExecute(UpdatesManager manager) {
+                loadData(manager);
+            }
+        }.execute();
+
+    }
+
+    private void loadData(UpdatesManager manager) {
+        manager.startLoading(new UpdateCallback() {
+            @Override
+            public void onDownloadSuccess() {
+                L.d("onDownloadSuccess");
+            }
+
+            @Override
+            public void onDownloadError() {
+                L.d("onDownloadError");
+                showNoNetworkDialog();
+            }
+        });
+    }
+
+    private void showNoNetworkDialog() {
+        if (isFinishing()) {
+            return;
+        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(new NoConnectionDialog(), NoConnectionDialog.TAG);
+        ft.commitAllowingStateLoss();
     }
 
     @Override

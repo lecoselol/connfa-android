@@ -1,5 +1,6 @@
 package com.ls.ui.dialog;
 
+import android.support.annotation.NonNull;
 import com.ls.drupalcon.R;
 
 import android.app.AlertDialog;
@@ -13,6 +14,7 @@ public class NoConnectionDialog extends DialogFragment {
 
     public static final String TAG = "NoConnectionDialog";
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
