@@ -9,15 +9,10 @@
     <string name="speakers">Speakers</string>
     <string name="location">Location</string>
     <string name="about">Info</string>
-    <string name="my_schedule">My Schedule</string>
     <string name="social_events">Social Events</string>
     <string name="search">Search</string>
-    <string name="filter">Filter</string>
-    <string name="experience_level">Experience level:</string>
     <string name="tracks">Tracks</string>
-    <string name="exp_levels">Experience Levels</string>
     <string name="NoConnectionMessage">Internet connection is not available at this moment. Please, try later</string>
-    <string name="exp_level">Experience level:</string>
     <string name="body_share">Hey, just thought this may be interesting for you:</string>
     <string name="title_share">Share using</string>
     <string name="event_category">Event</string>
@@ -32,7 +27,6 @@
     <string name="no_search_result">No Search Result</string>
     <string name="TWITTER">TWITTER</string>
     <string name="WEBSITE">WEBSITE</string>
-    <string name="lorem_ipsum">Lorem ipsum</string>
     <string name="APPLY">APPLY</string>
     <string name="CLEAR">CLEAR</string>
     <string name="access">ACCESS</string>

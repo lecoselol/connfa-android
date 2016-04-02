@@ -1,22 +1,5 @@
 package com.ls.ui.activity;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-
-import com.ls.drupalcon.R;
-import com.ls.drupalcon.app.App;
-import com.ls.drupalcon.model.Model;
-import com.ls.drupalcon.model.UpdatesManager;
-import com.ls.drupalcon.model.dao.EventDao;
-import com.ls.drupalcon.model.data.Level;
-import com.ls.drupalcon.model.data.Speaker;
-import com.ls.drupalcon.model.data.SpeakerDetailsEvent;
-import com.ls.drupalcon.model.managers.SpeakerManager;
-import com.ls.ui.view.CircleImageView;
-import com.ls.ui.view.NotifyingScrollView;
-import com.ls.utils.AnalyticsManager;
-import com.ls.utils.DateUtils;
-import com.ls.utils.WebviewUtils;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,11 +12,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.ls.drupalcon.R;
+import com.ls.drupalcon.app.App;
+import com.ls.drupalcon.model.Model;
+import com.ls.drupalcon.model.UpdatesManager;
+import com.ls.drupalcon.model.dao.EventDao;
+import com.ls.drupalcon.model.data.Speaker;
+import com.ls.drupalcon.model.data.SpeakerDetailsEvent;
+import com.ls.drupalcon.model.managers.SpeakerManager;
+import com.ls.ui.view.CircleImageView;
+import com.ls.ui.view.NotifyingScrollView;
+import com.ls.utils.AnalyticsManager;
+import com.ls.utils.DateUtils;
+import com.ls.utils.WebviewUtils;
 
 import java.util.List;
 
@@ -282,32 +278,12 @@ public class SpeakerDetailsActivity extends StackKeeperActivity implements View.
             txtWhere.append(String.format(" in %s", event.getPlace()));
         }
 
-        initEventExpLevel(eventView, event);
         eventView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EventDetailsActivity.startThisActivity(SpeakerDetailsActivity.this, event.getEventId(), event.getFrom());
             }
         });
-    }
-
-    private void initEventExpLevel(View eventView, SpeakerDetailsEvent event) {
-        TextView txtExpLevel = (TextView) eventView.findViewById(R.id.txtExpLevel);
-        ImageView imgExpLevel = (ImageView) eventView.findViewById(R.id.imgExpLevel);
-
-        String expLevel = event.getLevelName();
-        if (!TextUtils.isEmpty(expLevel)) {
-
-            String expText = String.format("%s %s", getResources().getString(R.string.experience_level), expLevel);
-            txtExpLevel.setText(expText);
-            txtExpLevel.setVisibility(View.VISIBLE);
-
-            int expIcon = Level.getIcon(expLevel);
-            if (expIcon != 0) {
-                imgExpLevel.setImageResource(expIcon);
-                imgExpLevel.setVisibility(View.VISIBLE);
-            }
-        }
     }
 
     @Override

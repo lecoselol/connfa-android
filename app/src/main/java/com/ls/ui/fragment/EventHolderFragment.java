@@ -1,35 +1,25 @@
 package com.ls.ui.fragment;
 
-
-import com.astuetz.PagerSlidingTabStrip;
-import com.ls.drupalcon.R;
-import com.ls.drupalcon.model.Model;
-import com.ls.drupalcon.model.PreferencesManager;
-import com.ls.drupalcon.model.UpdatesManager;
-import com.ls.drupalcon.model.managers.BofsManager;
-import com.ls.drupalcon.model.managers.FavoriteManager;
-import com.ls.drupalcon.model.managers.ProgramManager;
-import com.ls.drupalcon.model.managers.SocialManager;
-import com.ls.ui.activity.HomeActivity;
-import com.ls.ui.adapter.BaseEventDaysPagerAdapter;
-import com.ls.ui.drawer.DrawerManager;
-import com.ls.ui.receiver.ReceiverManager;
-import com.ls.utils.DateUtils;
-
-import org.jetbrains.annotations.NotNull;
-
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.astuetz.PagerSlidingTabStrip;
+import com.ls.drupalcon.R;
+import com.ls.drupalcon.model.Model;
+import com.ls.drupalcon.model.UpdatesManager;
+import com.ls.drupalcon.model.managers.BofsManager;
+import com.ls.drupalcon.model.managers.FavoriteManager;
+import com.ls.drupalcon.model.managers.ProgramManager;
+import com.ls.drupalcon.model.managers.SocialManager;
+import com.ls.ui.adapter.BaseEventDaysPagerAdapter;
+import com.ls.ui.drawer.DrawerManager;
+import com.ls.ui.receiver.ReceiverManager;
+import com.ls.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +157,6 @@ public class EventHolderFragment extends Fragment {
         return dayList;
     }
 
-
     private void updateViews(List<Long> dayList) {
         if (dayList.isEmpty()) {
             mPagerTabs.setVisibility(View.GONE);
@@ -176,7 +165,6 @@ public class EventHolderFragment extends Fragment {
             } else {
                 mTxtNoEvents.setVisibility(View.VISIBLE);
             }
-
         } else {
             mNoFavorites.setVisibility(View.GONE);
             mTxtNoEvents.setVisibility(View.GONE);
@@ -195,32 +183,6 @@ public class EventHolderFragment extends Fragment {
                 break;
             }
             item++;
-        }
-    }
-
-    private void showFilter() {
-        Activity activity = getActivity();
-        if (activity instanceof HomeActivity) {
-
-            if (!((HomeActivity) activity).mFilterDialog.isAdded()) {
-                ((HomeActivity) activity).mFilterDialog.show(getActivity().getSupportFragmentManager(), "filter");
-            }
-        }
-    }
-
-    private void updateFilterState(@NotNull MenuItem filter) {
-        boolean isFilterUsed = false;
-        List<Long> levelIds = PreferencesManager.getInstance().loadExpLevel();
-        List<Long> trackIds = PreferencesManager.getInstance().loadTracks();
-
-        if (!levelIds.isEmpty() || !trackIds.isEmpty()) {
-            isFilterUsed = true;
-        }
-
-        if (isFilterUsed) {
-            filter.setIcon(getResources().getDrawable(R.drawable.ic_filter));
-        } else {
-            filter.setIcon(getResources().getDrawable(R.drawable.ic_filter_empty));
         }
     }
 
