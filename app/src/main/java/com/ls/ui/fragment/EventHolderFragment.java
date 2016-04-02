@@ -17,12 +17,14 @@ import com.ls.drupalcon.model.managers.FavoriteManager;
 import com.ls.drupalcon.model.managers.ProgramManager;
 import com.ls.drupalcon.model.managers.SocialManager;
 import com.ls.ui.adapter.BaseEventDaysPagerAdapter;
-import com.ls.ui.drawer.DrawerManager;
 import com.ls.ui.receiver.ReceiverManager;
 import com.ls.utils.DateUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ls.ui.drawer.DrawerManager.*;
 
 public class EventHolderFragment extends Fragment {
 
@@ -33,7 +35,7 @@ public class EventHolderFragment extends Fragment {
     private PagerSlidingTabStrip mPagerTabs;
     private BaseEventDaysPagerAdapter mAdapter;
 
-    private DrawerManager.EventMode mEventMode;
+    private EventMode mEventMode;
     private View mTxtNoEvents;
     private View mNoFavorites;
 
@@ -78,7 +80,7 @@ public class EventHolderFragment extends Fragment {
 
         initData();
         initView();
-        new LoadData().execute();
+        new LoadData(this, mEventMode).execute();
     }
 
     @Override
@@ -91,8 +93,8 @@ public class EventHolderFragment extends Fragment {
     private void initData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            int eventPos = bundle.getInt(EXTRAS_ARG_MODE, DrawerManager.EventMode.Program.ordinal());
-            mEventMode = DrawerManager.EventMode.values()[eventPos];
+            int eventPos = bundle.getInt(EXTRAS_ARG_MODE, EventMode.Program.ordinal());
+            mEventMode = EventMode.values()[eventPos];
         }
     }
 
@@ -114,14 +116,22 @@ public class EventHolderFragment extends Fragment {
         mTxtNoEvents = view.findViewById(R.id.txtNoEvents);
         mNoFavorites = view.findViewById(R.id.emptyIcon);
 
-        if (mEventMode != DrawerManager.EventMode.Program) {
+        if (mEventMode != EventMode.Program) {
             setHasOptionsMenu(false);
         } else {
             setHasOptionsMenu(true);
         }
     }
 
-    class LoadData extends AsyncTask<Void, Void, List<Long>> {
+    static class LoadData extends AsyncTask<Void, Void, List<Long>> {
+
+        private final WeakReference<EventHolderFragment> mHostFragmentRef;
+        private final EventMode mEventMode;
+
+        LoadData(EventHolderFragment hostFragment, EventMode eventMode) {
+            mEventMode = eventMode;
+            mHostFragmentRef = new WeakReference<>(hostFragment);
+        }
 
         @Override
         protected List<Long> doInBackground(Void... params) {
@@ -130,37 +140,42 @@ public class EventHolderFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Long> result) {
-            updateViews(result);
+            EventHolderFragment fragment = mHostFragmentRef.get();
+            if (fragment == null) {
+                return;
+            }
+            fragment.updateViews(result);
         }
-    }
 
-    private List<Long> getDayList() {
-        List<Long> dayList = new ArrayList<>();
-        switch (mEventMode) {
-            case Bofs:
-                BofsManager bofsManager = Model.instance().getBofsManager();
-                dayList.addAll(bofsManager.getBofsDays());
-                break;
-            case Social:
-                SocialManager socialManager = Model.instance().getSocialManager();
-                dayList.addAll(socialManager.getSocialsDays());
-                break;
-            case Favorites:
-                FavoriteManager favoriteManager = Model.instance().getFavoriteManager();
-                dayList.addAll(favoriteManager.getFavoriteEventDays());
-                break;
-            default:
-                ProgramManager programManager = Model.instance().getProgramManager();
-                dayList.addAll(programManager.getProgramDays());
-                break;
+        private List<Long> getDayList() {
+            List<Long> dayList = new ArrayList<>();
+            switch (mEventMode) {
+                case Bofs:
+                    BofsManager bofsManager = Model.instance().getBofsManager();
+                    dayList.addAll(bofsManager.getBofsDays());
+                    break;
+                case Social:
+                    SocialManager socialManager = Model.instance().getSocialManager();
+                    dayList.addAll(socialManager.getSocialsDays());
+                    break;
+                case Favorites:
+                    FavoriteManager favoriteManager = Model.instance().getFavoriteManager();
+                    dayList.addAll(favoriteManager.getFavoriteEventDays());
+                    break;
+                default:
+                    ProgramManager programManager = Model.instance().getProgramManager();
+                    dayList.addAll(programManager.getProgramDays());
+                    break;
+            }
+            return dayList;
         }
-        return dayList;
+
     }
 
     private void updateViews(List<Long> dayList) {
         if (dayList.isEmpty()) {
             mPagerTabs.setVisibility(View.GONE);
-            if (mEventMode == DrawerManager.EventMode.Favorites) {
+            if (mEventMode == EventMode.Favorites) {
                 mNoFavorites.setVisibility(View.VISIBLE);
             } else {
                 mTxtNoEvents.setVisibility(View.VISIBLE);
@@ -190,7 +205,7 @@ public class EventHolderFragment extends Fragment {
         for (int id : requestIds) {
             int eventModePos = UpdatesManager.convertEventIdToEventModePos(id);
             if (eventModePos == mEventMode.ordinal()) {
-                new LoadData().execute();
+                new LoadData(this, mEventMode).execute();
                 break;
             }
         }
@@ -198,8 +213,8 @@ public class EventHolderFragment extends Fragment {
 
     private void updateFavorites() {
         if (getView() != null) {
-            if (mEventMode == DrawerManager.EventMode.Favorites) {
-                new LoadData().execute();
+            if (mEventMode == EventMode.Favorites) {
+                new LoadData(this, mEventMode).execute();
             }
         }
     }
