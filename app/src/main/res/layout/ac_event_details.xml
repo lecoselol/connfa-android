@@ -61,55 +61,6 @@
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/layoutPreDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <com.ls.ui.view.MediumFontTextView
-                        android:id="@+id/txtTrack"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/grey_400"
-                        android:textSize="@dimen/text_size_15"
-                        tools:text="@string/lorem_ipsum" />
-
-                    <LinearLayout
-                        android:id="@+id/layoutExpLevel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <com.ls.ui.view.MediumFontTextView
-                            android:id="@+id/txtExpLevel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginRight="8dp"
-                            android:textColor="@color/grey_400"
-                            android:textSize="@dimen/text_size_15"
-                            tools:text="@string/lorem_ipsum" />
-
-                        <ImageView
-                            android:id="@+id/imgExperience"
-                            android:layout_width="17dp"
-                            android:layout_height="17dp"
-                            android:layout_gravity="center"
-                            tools:src="@drawable/ic_launcher" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/topDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="72dp"
-                    android:background="@color/white_200" />
-
-                <LinearLayout
                     android:id="@+id/holderSpeakers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
