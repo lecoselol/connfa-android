@@ -41,11 +41,6 @@ public class DrawerManager {
 				fragmentTag = EventHolderFragment.TAG;
 				break;
 
-			case Favorites:
-				fragment = EventHolderFragment.newInstance(DrawerMenu.DrawerItem.Favorites.ordinal());
-				fragmentTag = EventHolderFragment.TAG;
-				break;
-
 			case Speakers:
 				fragment = new SpeakersListFragment();
 				fragmentTag = SpeakersListFragment.TAG;
