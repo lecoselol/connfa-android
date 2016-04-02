@@ -1,4 +1,4 @@
-package com.oddschecker;
+package com.ls.utils;
 
 import android.app.Application;
 

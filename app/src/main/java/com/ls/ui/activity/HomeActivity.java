@@ -1,25 +1,5 @@
 package com.ls.ui.activity;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-
-import com.ls.drupalcon.R;
-import com.ls.drupalcon.app.App;
-import com.ls.drupalcon.model.Model;
-import com.ls.drupalcon.model.UpdatesManager;
-import com.ls.drupalcon.model.data.Level;
-import com.ls.drupalcon.model.data.Track;
-import com.ls.drupalcon.model.managers.TracksManager;
-import com.ls.ui.adapter.item.EventListItem;
-import com.ls.ui.dialog.FilterDialog;
-import com.ls.ui.dialog.IrrelevantTimezoneDialog2;
-import com.ls.ui.drawer.DrawerAdapter;
-import com.ls.ui.drawer.DrawerManager;
-import com.ls.ui.drawer.DrawerMenu;
-import com.ls.ui.drawer.DrawerMenuItem;
-import com.ls.utils.AnalyticsManager;
-import com.ls.utils.KeyboardUtils;
-import com.ls.utils.ScheduleManager;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -29,15 +9,31 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.ls.drupalcon.R;
+import com.ls.drupalcon.app.App;
+import com.ls.drupalcon.model.Model;
+import com.ls.drupalcon.model.PreferencesManager;
+import com.ls.drupalcon.model.UpdateCallback;
+import com.ls.drupalcon.model.UpdatesManager;
+import com.ls.ui.dialog.NoConnectionDialog;
+import com.ls.ui.drawer.DrawerAdapter;
+import com.ls.ui.drawer.DrawerManager;
+import com.ls.ui.drawer.DrawerMenu;
+import com.ls.ui.drawer.DrawerMenuItem;
+import com.ls.util.L;
+import com.ls.utils.AnalyticsManager;
+import com.ls.utils.KeyboardUtils;
+import com.ls.utils.NetworkUtils;
+import com.ls.utils.ScheduleManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class HomeActivity extends StateActivity implements FilterDialog.OnFilterApplied {
+public class HomeActivity extends StateActivity {
 
     private DrawerManager mFrManager;
     private DrawerAdapter mAdapter;
@@ -49,16 +45,7 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
 
-    public FilterDialog mFilterDialog;
     public boolean mIsDrawerItemClicked;
-
-    private UpdatesManager.DataUpdatedListener updateReceiver = new UpdatesManager.DataUpdatedListener() {
-        @Override
-        public void onDataUpdated(List<Integer> requestIds) {
-            closeFilterDialog();
-            initFilterDialog();
-        }
-    };
 
     public static void startThisActivity(Activity activity) {
         Intent intent = new Intent(activity, HomeActivity.class);
@@ -69,19 +56,16 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_main);
-        Model.instance().getUpdatesManager().registerUpdateListener(updateReceiver);
 
         initToolbar();
         initNavigationDrawer();
         initNavigationDrawerList();
-        initFilterDialog();
 
         initFragmentManager();
         if (getIntent().getExtras() != null) {
             isIntentHandled = true;
         }
         handleIntent(getIntent());
-        //showIrrelevantTimezoneDialogIfNeeded();
     }
 
     @Override
@@ -106,14 +90,8 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
 
     @Override
     protected void onDestroy() {
-        Model.instance().getUpdatesManager().unregisterUpdateListener(updateReceiver);
         AnalyticsManager.sendEvent(this, "Application", R.string.action_close);
         super.onDestroy();
-    }
-
-    @Override
-    public void onNewFilterApplied() {
-        mFrManager.reloadPrograms();
     }
 
     private void initToolbar() {
@@ -125,7 +103,8 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
 
     private void initNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name, R.string.app_name);
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.app_name,
+                                                                       R.string.app_name);
 
         mDrawerLayout.setDrawerListener(drawerToggle);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -168,57 +147,10 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
 
         ListView listView = (ListView) findViewById(R.id.leftDrawer);
         listView.addHeaderView(
-                getLayoutInflater().inflate(R.layout.nav_drawer_header, null),
-                null,
-                false);
+            getLayoutInflater().inflate(R.layout.nav_drawer_header, null),
+            null,
+            false);
         listView.setAdapter(mAdapter);
-    }
-
-    public void initFilterDialog() {
-        new AsyncTask<Void, Void, List<EventListItem>>() {
-            @Override
-            protected List<EventListItem> doInBackground(Void... params) {
-                TracksManager tracksManager = Model.instance().getTracksManager();
-                List<Track> trackList = tracksManager.getTracks();
-                List<Level> levelList = tracksManager.getLevels();
-
-                Collections.sort(trackList, new Comparator<Track>() {
-                    @Override
-                    public int compare(Track track1, Track track2) {
-                        String name1 = track1.getName();
-                        String name2 = track2.getName();
-                        return name1.compareToIgnoreCase(name2);
-                    }
-                });
-
-                String[] tracks = new String[trackList.size()];
-                String[] levels = new String[levelList.size()];
-
-                for (int i = 0; i < trackList.size(); i++) {
-                    tracks[i] = trackList.get(i).getName();
-                }
-
-                for (int i = 0; i < levelList.size(); i++) {
-                    levels[i] = levelList.get(i).getName();
-                }
-                mFilterDialog = FilterDialog.newInstance(tracks, levels);
-                mFilterDialog.setData(levelList, trackList);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(List<EventListItem> eventListItems) {
-            }
-        }.execute();
-    }
-
-    public void closeFilterDialog() {
-        if (mFilterDialog != null) {
-            if (mFilterDialog.isAdded()) {
-                mFilterDialog.dismissAllowingStateLoss();
-            }
-            mFilterDialog.clearFilter();
-        }
     }
 
     private void handleIntent(Intent intent) {
@@ -273,7 +205,8 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
 
     private void initFragmentManager() {
         mFrManager = DrawerManager.getInstance(getSupportFragmentManager(), R.id.mainFragment);
-        AnalyticsManager.sendEvent(this, App.getContext().getString(R.string.Sessions) + " screen", R.string.action_open);
+        AnalyticsManager.sendEvent(this, App.getContext().getString(R.string.Sessions) + " screen",
+                                   R.string.action_open);
         mFrManager.setFragment(DrawerMenu.DrawerItem.Program);
     }
 
@@ -296,13 +229,4 @@ public class HomeActivity extends StateActivity implements FilterDialog.OnFilter
         return result;
     }
 
-     private void showIrrelevantTimezoneDialogIfNeeded() {
-        if (!IrrelevantTimezoneDialog2.isCurrentTimezoneRelevant()
-                && IrrelevantTimezoneDialog2.canPresentMessage(this)
-                && !isFinishing()) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(new IrrelevantTimezoneDialog2(), IrrelevantTimezoneDialog2.TAG);
-            ft.commitAllowingStateLoss();
-        }
-    }
 }
