@@ -176,7 +176,7 @@ public class EventFragment extends Fragment implements EventsAdapter.Listener {
     private void onItemClick(int position) {
         EventListItem item = mAdapter.getItem(position);
 
-        if (item.getEvent() != null && item.getEvent().getId() != 0) {
+        if (item.getEvent() != null) {
             long type = item.getEvent().getType();
 
             if (type == Type.SPEACH || type == Type.SPEACH_OF_DAY) {
