@@ -24,6 +24,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ls.drupalcon.R;
+import com.ls.drupalcon.app.App;
 import com.ls.drupalcon.model.Model;
 import com.ls.drupalcon.model.PreferencesManager;
 import com.ls.drupalcon.model.UpdatesManager;
@@ -287,8 +288,7 @@ public class EventDetailsActivity extends StackKeeperActivity {
     }
 
     private void fillSpeakers(@NonNull EventDetailsEvent event) {
-        List<Speaker> speakerList = new ArrayList<>();
-        speakerList.addAll(mSpeakerList);
+        List<Speaker> speakerList = App.getInstance().getSpeakersWithinSession(event.getEventId());
 
         if (!speakerList.isEmpty()) {
             LayoutInflater inflater = LayoutInflater.from(EventDetailsActivity.this);

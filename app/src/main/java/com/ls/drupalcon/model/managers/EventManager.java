@@ -3,6 +3,7 @@ package com.ls.drupalcon.model.managers;
 import com.ls.drupal.AbstractBaseDrupalEntity;
 import com.ls.drupal.DrupalClient;
 import com.ls.drupalcon.app.App;
+import com.ls.drupalcon.model.Model;
 import com.ls.drupalcon.model.dao.EventDao;
 import com.ls.drupalcon.model.data.Event;
 import com.ls.drupalcon.model.data.EventDetailsEvent;
@@ -43,6 +44,8 @@ public class EventManager extends SynchronousItemManager<Event.Holder, Object, S
                 mEventDao.insertEventSpeaker(eventId, speakerId);
             }
         }
+
+        App.getInstance().saveSpeakersFrom(data);
     }
 
     public void deleteEvent(Event data) {
