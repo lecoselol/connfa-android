@@ -202,13 +202,16 @@ public class HomeActivity extends StateActivity {
     }
 
     private void handleIntent(Intent intent) {
-        if (intent.getExtras() != null) {
-            long eventId = intent.getLongExtra(EventDetailsActivity.EXTRA_EVENT_ID, -1);
-            long day = intent.getLongExtra(EventDetailsActivity.EXTRA_DAY, -1);
-            redirectToDetails(eventId, day);
-            isIntentHandled = false;
-            new ScheduleManager(this).cancelAlarm(eventId);
+        if (intent.getExtras() == null) {
+            return;
         }
+        long eventId = intent.getLongExtra(EventDetailsActivity.EXTRA_EVENT_ID, -1);
+        long day = intent.getLongExtra(EventDetailsActivity.EXTRA_DAY, -1);
+        if (eventId != -1 && day != -1) {
+            redirectToDetails(eventId, day);
+        }
+        isIntentHandled = false;
+        new ScheduleManager(this).cancelAlarm(eventId);
     }
 
     private void redirectToDetails(long id, long day) {
